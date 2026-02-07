@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
-import { ChevronLeft, IndianRupee, History, Calendar, Plus, CreditCard, FileText, MessageCircle, ChevronDown, ChevronUp, MapPin, Truck, AlertCircle, UserCheck, UserX, ShieldCheck, Smartphone } from 'lucide-react';
-import { Student, SchoolClass, Transaction, FeeItem } from '../types';
-import { calculateStudentDues, formatCurrency, sendWhatsAppReceipt, getMonthName, generateUPILink } from '../utils';
-import Invoice from './Invoice';
+import { ChevronLeft, History, Calendar, Plus, CreditCard, FileText, MessageCircle, ChevronDown, ChevronUp, MapPin, Truck, AlertCircle, UserCheck, UserX, ShieldCheck, Smartphone } from 'lucide-react';
+import { Student, SchoolClass, Transaction, FeeItem } from '../types.ts';
+import { calculateStudentDues, formatCurrency, sendWhatsAppReceipt, getMonthName, generateUPILink } from '../utils.ts';
+import Invoice from './Invoice.tsx';
 
 interface Props {
   student: Student;
@@ -232,7 +231,7 @@ const StudentDetails: React.FC<Props> = ({ student, schoolClass, allClasses, tra
             </div>
           </div>
 
-          {/* Custom Fees Section */}
+          {/* Extra Fees Section */}
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
             <div className="p-6 border-b flex items-center justify-between">
               <h3 className="font-bold text-slate-800">Extra Fee Items</h3>

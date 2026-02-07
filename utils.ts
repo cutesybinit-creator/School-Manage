@@ -1,5 +1,4 @@
-
-import { Student, SchoolClass, FeeItem, Transaction } from './types';
+import { Student, SchoolClass, FeeItem, Transaction } from './types.ts';
 
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
