@@ -1,7 +1,8 @@
+
 import React from 'react';
-import { Printer, MessageCircle, Link as LinkIcon } from 'lucide-react';
-import { Student, SchoolClass, Transaction } from '../types.ts';
-import { formatCurrency, sendWhatsAppReceipt, generateUPILink, generatePublicInvoiceLink } from '../utils.ts';
+import { X, Printer, IndianRupee, MessageCircle, Smartphone, Share2, Link as LinkIcon } from 'lucide-react';
+import { Student, SchoolClass, Transaction } from '../types';
+import { formatCurrency, sendWhatsAppReceipt, generateUPILink, generatePublicInvoiceLink } from '../utils';
 
 interface Props {
   student: Student;

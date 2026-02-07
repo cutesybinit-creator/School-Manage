@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
-import { Plus, Trash2, GraduationCap, ArrowLeft, Users, AlertCircle, CheckCircle2, ArrowUpCircle, X, Eye, Edit2, UserCheck, ShieldCheck, UserPlus } from 'lucide-react';
-import { SchoolClass, Student, FeeItem } from '../types.ts';
-import { formatCurrency } from '../utils.ts';
+import { Plus, Trash2, GraduationCap, ArrowLeft, Users, AlertCircle, CheckCircle2, IndianRupee, ArrowUpCircle, X, Eye, Edit2, UserCheck, UserX, ShieldCheck, UserPlus, Calendar } from 'lucide-react';
+import { SchoolClass, Student, FeeItem } from '../types';
+import { formatCurrency } from '../utils';
 
 interface Props {
   classes: SchoolClass[];
@@ -95,6 +96,7 @@ const ClassManager: React.FC<Props> = ({
   };
 
   const openStudentAdmission = (classId: string, classStudents: Student[]) => {
+    // Auto Roll Number Calculation
     const maxRoll = classStudents.reduce((max, s) => {
       const num = parseInt(s.rollNo);
       return !isNaN(num) && num > max ? num : max;

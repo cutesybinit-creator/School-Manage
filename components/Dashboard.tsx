@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { IndianRupee, Users, GraduationCap, TrendingUp } from 'lucide-react';
-import { AppData } from '../types.ts';
-import { calculateStudentDues, formatCurrency } from '../utils.ts';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AppData } from '../types';
+import { calculateStudentDues, formatCurrency } from '../utils';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 interface Props {
   data: AppData;
@@ -80,7 +81,7 @@ const Dashboard: React.FC<Props> = ({ data }) => {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
           <h3 className="text-lg font-bold mb-4 text-slate-800">Recent Transactions</h3>
           <div className="space-y-4">
-            {data.transactions.slice(0, 5).map((tx, idx) => {
+            {data.transactions.slice(-5).reverse().map((tx, idx) => {
               const student = data.students.find(s => s.id === tx.studentId);
               return (
                 <div key={idx} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors">

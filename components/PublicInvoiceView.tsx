@@ -1,6 +1,7 @@
+
 import React, { useEffect, useState } from 'react';
-import { Smartphone, BookOpen, User, CheckCircle2, Printer } from 'lucide-react';
-import { decodeInvoiceData, formatCurrency, generateUPILink } from '../utils.ts';
+import { Smartphone, BookOpen, User, CheckCircle2, IndianRupee, Printer, ArrowLeft } from 'lucide-react';
+import { decodeInvoiceData, formatCurrency, generateUPILink } from '../utils';
 
 interface Props {
   onExit: () => void;
@@ -58,6 +59,7 @@ const PublicInvoiceView: React.FC<Props> = ({ onExit }) => {
         </div>
 
         <div className="bg-white rounded-[2rem] shadow-2xl shadow-indigo-100/50 overflow-hidden border border-slate-100 relative">
+          {/* Header */}
           <div className="p-8 bg-indigo-600 text-white relative overflow-hidden">
              <div className="absolute top-0 right-0 p-12 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
              <div className="relative z-10 flex flex-col md:flex-row justify-between items-start gap-6">
@@ -74,6 +76,7 @@ const PublicInvoiceView: React.FC<Props> = ({ onExit }) => {
           </div>
 
           <div className="p-8 space-y-8">
+             {/* Status Message */}
              {invoiceData.txA > 0 && (
                <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-3xl flex items-center gap-4 animate-in zoom-in duration-300">
                  <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center shrink-0">
@@ -86,6 +89,7 @@ const PublicInvoiceView: React.FC<Props> = ({ onExit }) => {
                </div>
              )}
 
+             {/* Payment Details */}
              {invoiceData.txB && (
                <div className="space-y-4">
                   <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Transaction Items</h4>
@@ -100,6 +104,7 @@ const PublicInvoiceView: React.FC<Props> = ({ onExit }) => {
                </div>
              )}
 
+             {/* Outstanding Action */}
              {invoiceData.bal > 0 ? (
                <div className="pt-8 border-t border-slate-100 flex flex-col items-center">
                   <div className="bg-amber-50 text-amber-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest mb-2 border border-amber-100">Pending Dues</div>
@@ -131,6 +136,7 @@ const PublicInvoiceView: React.FC<Props> = ({ onExit }) => {
                </div>
              )}
 
+             {/* Footer Info */}
              <div className="pt-8 border-t border-slate-50 text-center space-y-2">
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Computer Generated Receipt • EduFee Pro v2.5</p>
                 <p className="text-[9px] text-slate-300">This invoice is for verification and payment purposes only.</p>
