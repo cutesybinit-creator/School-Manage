@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { IndianRupee, Users, GraduationCap, TrendingUp } from 'lucide-react';
-import { AppData } from '../types';
-import { calculateStudentDues, formatCurrency } from '../utils';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { AppData } from '../types.ts';
+import { calculateStudentDues, formatCurrency } from '../utils.ts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface Props {
   data: AppData;

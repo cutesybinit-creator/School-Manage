@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { X, CreditCard, ListChecks, Truck } from 'lucide-react';
-import { Student, SchoolClass, Transaction, FeeItem, TransactionBreakdown } from '../types';
-import { formatCurrency, calculateStudentDues, getMonthName } from '../utils';
+import { Student, SchoolClass, Transaction, FeeItem, TransactionBreakdown } from '../types.ts';
+import { formatCurrency, calculateStudentDues, getMonthName } from '../utils.ts';
 
 interface Props {
   student: Student;
@@ -32,7 +31,6 @@ const PaymentModal: React.FC<Props> = ({ student, schoolClass, allClasses, trans
     const items: TransactionBreakdown[] = [];
     let remaining = val;
 
-    // Allocation logic: Previous Dues -> Current Month -> Custom
     stats.pendingMonths.forEach(m => {
       if (remaining <= 0) return;
       const dueForThisMonth = m.expectedAmount - m.paidAmount;
@@ -46,7 +44,6 @@ const PaymentModal: React.FC<Props> = ({ student, schoolClass, allClasses, trans
       }
     });
 
-    // custom fees allocation
     customFees.forEach(fee => {
       if (remaining <= 0) return;
       const allocation = Math.min(remaining, fee.amount);

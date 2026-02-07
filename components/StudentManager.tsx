@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
-import { Plus, Search, User, Filter, Edit2, Trash2, Eye, Truck, ToggleLeft, ToggleRight, UserX, UserCheck, ShieldCheck, Calendar } from 'lucide-react';
-import { SchoolClass, Student } from '../types';
+import { Plus, Search, User, Edit2, Trash2, Eye, ToggleLeft, ToggleRight, UserX, UserCheck, ShieldCheck, Calendar } from 'lucide-react';
+import { SchoolClass, Student } from '../types.ts';
 
 interface Props {
   classes: SchoolClass[];

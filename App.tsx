@@ -1,15 +1,14 @@
-
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Users, BookOpen, IndianRupee, Menu, X, Plus, Trash2, ChevronRight, FileText, CreditCard, Loader2 } from 'lucide-react';
-import { SchoolClass, Student, Transaction, FeeItem, AppData } from './types';
-import { INITIAL_DATA } from './constants';
-import Dashboard from './components/Dashboard';
-import ClassManager from './components/ClassManager';
-import StudentManager from './components/StudentManager';
-import StudentDetails from './components/StudentDetails';
-import PaymentModal from './components/PaymentModal';
-import PublicInvoiceView from './components/PublicInvoiceView';
-import { supabase } from './supabaseClient';
+import { LayoutDashboard, Users, BookOpen, Menu, Loader2 } from 'lucide-react';
+import { SchoolClass, Student, Transaction, FeeItem, AppData } from './types.ts';
+import { INITIAL_DATA } from './constants.tsx';
+import Dashboard from './components/Dashboard.tsx';
+import ClassManager from './components/ClassManager.tsx';
+import StudentManager from './components/StudentManager.tsx';
+import StudentDetails from './components/StudentDetails.tsx';
+import PaymentModal from './components/PaymentModal.tsx';
+import PublicInvoiceView from './components/PublicInvoiceView.tsx';
+import { supabase } from './supabaseClient.ts';
 
 const App: React.FC = () => {
   const [data, setData] = useState<AppData>(INITIAL_DATA);

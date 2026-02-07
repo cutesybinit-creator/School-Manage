@@ -1,7 +1,6 @@
-
 import React, { useEffect, useState } from 'react';
-import { Smartphone, BookOpen, User, CheckCircle2, IndianRupee, Printer, ArrowLeft } from 'lucide-react';
-import { decodeInvoiceData, formatCurrency, generateUPILink } from '../utils';
+import { Smartphone, BookOpen, User, CheckCircle2, Printer } from 'lucide-react';
+import { decodeInvoiceData, formatCurrency, generateUPILink } from '../utils.ts';
 
 interface Props {
   onExit: () => void;
