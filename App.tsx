@@ -25,35 +25,42 @@ const App: React.FC = () => {
   const [loginError, setLoginError] = useState('');
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('iv')) {
-      setIsGuestView(true);
-      setLoading(false);
-    } else {
-      const savedAuth = localStorage.getItem('edufee_auth');
-      if (savedAuth === 'true') {
-        setIsAuthenticated(true);
-        fetchAllData();
-      } else {
+    const initialize = async () => {
+      const params = new URLSearchParams(window.location.search);
+      // Parent View check - No login needed for public invoice
+      if (params.has('iv')) {
+        setIsGuestView(true);
         setLoading(false);
+      } else {
+        // Admin Auth check
+        const savedAuth = localStorage.getItem('edufee_auth');
+        if (savedAuth === 'true') {
+          setIsAuthenticated(true);
+          await fetchAllData();
+        } else {
+          setLoading(false);
+        }
       }
-    }
+    };
+    initialize();
   }, []);
 
   const fetchAllData = async () => {
     setLoading(true);
     try {
       const [
-        { data: classes },
-        { data: students },
-        { data: transactions },
-        { data: customFees }
+        { data: classes, error: ce },
+        { data: students, error: se },
+        { data: transactions, error: te },
+        { data: customFees, error: fe }
       ] = await Promise.all([
         supabase.from('classes').select('*'),
         supabase.from('students').select('*'),
         supabase.from('transactions').select('*'),
         supabase.from('custom_fees').select('*')
       ]);
+
+      if (ce || se || te || fe) throw new Error("Data fetch error");
 
       setData({
         classes: classes || [],
@@ -70,14 +77,13 @@ const App: React.FC = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Default credentials as requested for Admin access
     if (loginForm.username === 'admin' && loginForm.password === 'admin123') {
       setIsAuthenticated(true);
       localStorage.setItem('edufee_auth', 'true');
       setLoginError('');
       fetchAllData();
     } else {
-      setLoginError('Invalid credentials. (Hint: admin / admin123)');
+      setLoginError('Invalid credentials. (admin / admin123)');
     }
   };
 
@@ -191,22 +197,22 @@ const App: React.FC = () => {
     }
   };
 
-  // 1. Guest View (Parents via Invoice Link) - Inaccessible to Admin Dashboard
+  // 1. Parent View (Public Invoice)
   if (isGuestView) {
     return <PublicInvoiceView onExit={() => { window.location.href = window.location.origin + window.location.pathname; }} />;
   }
 
-  // 2. Initial Loading State
+  // 2. Loading State
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4">
         <Loader2 className="w-12 h-12 text-indigo-600 animate-spin" />
-        <p className="text-slate-500 font-medium animate-pulse">Initializing System...</p>
+        <p className="text-slate-500 font-medium">Loading EduFee Pro...</p>
       </div>
     );
   }
 
-  // 3. Admin Login Required (Authentication Gate)
+  // 3. Admin Login screen
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
@@ -215,49 +221,40 @@ const App: React.FC = () => {
             <div className="bg-indigo-600 p-4 rounded-2xl mb-4 shadow-lg shadow-indigo-100">
               <Lock className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-black text-slate-800 tracking-tight">Admin Login</h1>
-            <p className="text-slate-500 text-sm">Secure Portal for School Management</p>
+            <h1 className="text-2xl font-black text-slate-800 tracking-tight">Admin Portal</h1>
+            <p className="text-slate-500 text-sm text-center">Login to manage school fees and students</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 ml-1">Username</label>
-              <input
-                type="text"
-                required
-                className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50/50 outline-none transition-all"
-                placeholder="admin"
-                value={loginForm.username}
-                onChange={e => setLoginForm({...loginForm, username: e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 ml-1">Password</label>
-              <input
-                type="password"
-                required
-                className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50/50 outline-none transition-all"
-                placeholder="••••••••"
-                value={loginForm.password}
-                onChange={e => setLoginForm({...loginForm, password: e.target.value})}
-              />
-            </div>
-            {loginError && <p className="text-red-500 text-xs font-bold text-center px-2">{loginError}</p>}
+            <input
+              type="text"
+              required
+              className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:ring-4 focus:ring-indigo-50 transition-all"
+              placeholder="Username (admin)"
+              value={loginForm.username}
+              onChange={e => setLoginForm({...loginForm, username: e.target.value})}
+            />
+            <input
+              type="password"
+              required
+              className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:ring-4 focus:ring-indigo-50 transition-all"
+              placeholder="Password (admin123)"
+              value={loginForm.password}
+              onChange={e => setLoginForm({...loginForm, password: e.target.value})}
+            />
+            {loginError && <p className="text-red-500 text-xs font-bold text-center">{loginError}</p>}
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-lg hover:bg-indigo-700 shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all"
+              className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-lg hover:bg-indigo-700 shadow-xl transition-all"
             >
-              Enter Portal
+              Sign In
             </button>
           </form>
-          <p className="mt-8 text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-            EduFee Pro v2.5 • Authorized Access Only
-          </p>
         </div>
       </div>
     );
   }
 
-  // 4. Protected Admin Dashboard Content
+  // 4. Admin Dashboard
   const renderContent = () => {
     if (selectedStudentId) {
       const student = data.students.find(s => s.id === selectedStudentId);
@@ -321,20 +318,27 @@ const App: React.FC = () => {
             <h1 className="text-xl font-bold tracking-tight">EduFee Pro</h1>
           </div>
           <nav className="space-y-2 flex-1">
-            {[
-              { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-              { id: 'classes', label: 'Classes', icon: BookOpen },
-              { id: 'students', label: 'Students', icon: Users },
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => { setActiveTab(item.id as any); setSelectedStudentId(null); setIsSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === item.id && !selectedStudentId ? 'bg-indigo-800 text-white' : 'text-indigo-200 hover:bg-indigo-800/50 hover:text-white'}`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </button>
-            ))}
+            <button
+              onClick={() => { setActiveTab('dashboard'); setSelectedStudentId(null); setIsSidebarOpen(false); }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === 'dashboard' ? 'bg-indigo-800' : 'text-indigo-200 hover:bg-indigo-800'}`}
+            >
+              <LayoutDashboard className="w-5 h-5" />
+              <span className="font-medium">Dashboard</span>
+            </button>
+            <button
+              onClick={() => { setActiveTab('classes'); setSelectedStudentId(null); setIsSidebarOpen(false); }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === 'classes' ? 'bg-indigo-800' : 'text-indigo-200 hover:bg-indigo-800'}`}
+            >
+              <BookOpen className="w-5 h-5" />
+              <span className="font-medium">Classes</span>
+            </button>
+            <button
+              onClick={() => { setActiveTab('students'); setSelectedStudentId(null); setIsSidebarOpen(false); }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === 'students' ? 'bg-indigo-800' : 'text-indigo-200 hover:bg-indigo-800'}`}
+            >
+              <Users className="w-5 h-5" />
+              <span className="font-medium">Students</span>
+            </button>
           </nav>
           
           <button 
@@ -350,8 +354,8 @@ const App: React.FC = () => {
         <header className="h-16 bg-white border-b flex items-center justify-between px-6 sticky top-0 z-10">
           <button className="md:hidden p-2 hover:bg-slate-100 rounded-lg" onClick={() => setIsSidebarOpen(true)}><Menu className="w-6 h-6" /></button>
           <div className="flex items-center gap-4">
-             <div className="hidden md:block text-[10px] text-slate-500 font-bold uppercase tracking-widest">Administrator Portal</div>
-             <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">A</div>
+             <div className="hidden md:block text-[10px] text-slate-500 font-bold uppercase tracking-widest">Admin Portal</div>
+             <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">A</div>
           </div>
         </header>
         <div className="flex-1 overflow-y-auto p-4 md:p-8">{renderContent()}</div>
